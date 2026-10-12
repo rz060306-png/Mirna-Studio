@@ -1,0 +1,315 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ==========================================
+   RESET & BASE STYLING
+   ========================================== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #faf8f5;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+}
+
+/* ==========================================
+   INTRO / SPLASH SCREEN OVERLAY STYLING
+   ========================================== */
+#intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #faf8f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+}
+
+#intro-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.intro-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #1c1917;
+    animation: introPulse 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes introPulse {
+    0% {
+        opacity: 0.3;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.03);
+    }
+}
+
+/* ==========================================
+   CAMERA & CANVAS MIRRORING
+   ========================================== */
+video {
+    transform: scaleX(-1);
+}
+
+.captured-frame {
+    transform: scaleX(-1);
+    object-fit: cover;
+}
+
+.uploaded-frame {
+    transform: scaleX(1) !important;
+}
+
+/* ==========================================
+   MASK & SHAPE STYLING
+   ========================================== */
+.heart-shape-active {
+    clip-path: url(#heart-clip) !important;
+    -webkit-clip-path: url(#heart-clip) !important;
+}
+
+/* ==========================================
+   PRESET FILTER CSS
+   ========================================== */
+.filter-normal { 
+    filter: none; 
+}
+.filter-vintage { 
+    filter: sepia(0.35) contrast(0.95) brightness(1.05) saturate(1.1); 
+}
+.filter-bw { 
+    filter: grayscale(1) contrast(1.15) brightness(1.02); 
+}
+.filter-warm { 
+    filter: saturate(1.2) sepia(0.12) brightness(1.03); 
+}
+.filter-cool { 
+    filter: hue-rotate(10deg) saturate(1.1) brightness(1.03); 
+}
+
+/* ==========================================
+   ACTIVE STATES (HIGHLIGHT SELECTION)
+   ========================================== */
+.filter-active {
+    border-color: #334155 !important;
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+.shape-active, 
+.template-active {
+    border-color: #334155 !important;
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.frame-active {
+    border-color: #0f172a !important;
+    box-shadow: 0 0 0 2px #0f172a;
+}
+
+/* ==========================================
+   ANIMATION & TRANSITIONS
+   ========================================== */
+.slot-wrapper {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================
+   CUSTOM SCROLLBAR
+   ========================================== */
+.custom-scrollbar::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* ==========================================
+   LAYOUT TEMPLATE
+   ========================================== */
+#booth-strip:not(.custom-mode)[data-tpl="gridportrait"] .slot-wrapper { aspect-ratio: 3 / 4; }
+#booth-strip:not(.custom-mode)[data-tpl="gridportrait"] .footer-box { margin-top: auto; }
+#booth-strip:not(.custom-mode)[data-tpl="duov"] .slot-wrapper { aspect-ratio: 3 / 2; }
+#booth-strip:not(.custom-mode)[data-tpl="duov"] .footer-box { margin-top: auto; }
+#booth-strip:not(.custom-mode)[data-tpl="singlep"] .slot-wrapper { aspect-ratio: 5 / 6; }
+#booth-strip:not(.custom-mode)[data-tpl="singlep"] .footer-box { margin-top: 14px; }
+#booth-strip:not(.custom-mode)[data-tpl="strip3"] .slot-wrapper { aspect-ratio: 3 / 2; }
+#booth-strip:not(.custom-mode)[data-tpl="strip3"] .footer-box { margin-top: 30px; }
+
+/* ==========================================
+   FRAME CUSTOM (PNG OVERLAY)
+   ========================================== */
+.frame-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+}
+
+#booth-strip.custom-mode {
+    padding: 0 !important;
+    gap: 0;
+    background: transparent !important;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+#booth-strip.custom-mode .frame-overlay { display: block; }
+#booth-strip.custom-mode .footer-box { display: none; }
+#booth-strip.custom-mode #photo-slots-container {
+    position: absolute;
+    inset: 0;
+    display: block;
+    z-index: auto !important;
+}
+#booth-strip.custom-mode .slot-wrapper {
+    position: absolute;
+    aspect-ratio: auto;
+    border: none;
+    border-radius: 0;
+}
+#booth-strip.custom-mode .btn-retake { z-index: 20; }
+
+/* ==========================================
+   RESPONSIVE DESIGN (MOBILE ADAPTATION)
+   ========================================== */
+@media (max-width: 768px) {
+    .responsive-strip-container {
+        transform: scale(0.88);
+        transform-origin: top center;
+        margin-bottom: -35px;
+    }
+
+    .intro-title {
+        font-size: 1.8rem;
+        letter-spacing: 0.2em;
+    }
+}
+
+/* ==========================================
+   CETAK LANGSUNG KERTAS 4R (4 x 6 inci)
+   ========================================== */
+@page {
+    size: 4in 6in;
+    margin: 0;
+}
+
+#print-area {
+    display: none;
+}
+
+@media print {
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+        background: #ffffff !important;
+        display: block !important;
+    }
+    body > *:not(#print-area) {
+        display: none !important;
+    }
+    #print-area {
+        display: block !important;
+        width: 4in;
+        height: 6in;
+        overflow: hidden;
+    }
+    #print-area img {
+        display: block;
+        width: 4in;
+        height: 6in;
+    }
+}
+
+/* ==========================================
+   TAB STRIP 1 / STRIP 2
+   ========================================== */
+.strip-tab-active {
+    border-color: #334155 !important;
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+/* ==========================================
+   KAMERA LAYAR PENUH (TABLET / MONITOR)
+   ========================================== */
+#fs-controls {
+    display: none;
+}
+
+#camera-box.cam-full {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    aspect-ratio: auto !important;
+    z-index: 9998;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #000;
+}
+
+#camera-box.cam-full #fs-controls {
+    display: flex;
+}
+
+#camera-box.cam-full #fs-controls.fs-busy {
+    display: none !important;
+}
+
+#camera-box.cam-full #countdown {
+    font-size: clamp(8rem, 28vmin, 22rem);
+}
+
+#camera-box.cam-full #slot-badge {
+    bottom: auto;
+    top: 0.75rem;
+    left: 0.75rem;
+    font-size: 14px;
+    padding: 0.4rem 0.9rem;
+}
+
+#camera-box.cam-full #fullscreen-btn {
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 14px;
+    padding: 0.5rem 1rem;
+}
+
+body.cam-lock {
+    overflow: hidden;
+}

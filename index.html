@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-gray-700 min-h-screen flex flex-col justify-between antialiased selection:bg-rose-100 selection:text-rose-800">
+
+    <div id="intro-overlay">
+        <h1 class="intro-title">𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜</h1>
+    </div>
+
+    <svg width="0" height="0" class="absolute block">
+        <defs>
+            <clipPath id="heart-clip" clipPathUnits="objectBoundingBox">
+                <path d="M 0.5,0.292 C 0.382,-0.05 0,0.067 0,0.383 C 0,0.617 0.233,0.767 0.5,0.983 C 0.767,0.767 1,0.617 1,0.383 C 1,0.067 0.618,-0.05 0.5,0.292 Z"></path>
+            </clipPath>
+        </defs>
+    </svg>
+
+    <header class="py-3 md:py-4 text-center bg-white/80 backdrop-blur-md shadow-xs sticky top-0 z-50 px-4 border-b border-stone-200/60">
+        <h1 class="text-xl md:text-2xl font-bold tracking-wider text-stone-800">𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜</h1>
+        <p class="text-[10px] md:text-xs text-stone-400 mt-0.5">Bikin momen biasa jadi luar biasa</p>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start my-auto">
+        
+        <section class="lg:col-span-7 bg-white p-4 md:p-6 rounded-2xl shadow-xs border border-stone-200/70 flex flex-col gap-5">
+            
+            <div id="camera-box" class="relative aspect-[4/3] w-full bg-stone-900 rounded-xl overflow-hidden border border-stone-200 shadow-inner group">
+                <video id="video" class="w-full h-full filter-normal object-cover" autoplay playsinline></video>
+                
+                <div id="countdown" class="absolute inset-0 flex items-center justify-center text-7xl font-extrabold text-white bg-black/40 backdrop-blur-xs hidden transition-all z-30">3</div>
+                <div id="flash" class="absolute inset-0 bg-white hidden z-40"></div>
+                
+                <div id="slot-badge" class="absolute bottom-3 left-3 bg-black/60 text-white px-3 py-1 rounded-full text-[11px] font-medium backdrop-blur-md border border-white/10 flex items-center gap-1.5 z-30">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Slot: <span id="photo-index" class="text-amber-300 font-bold">0</span> / <span id="total-slots-text">4</span>
+                </div>
+
+                <!-- Tombol layar penuh -->
+                <button id="fullscreen-btn" type="button" class="absolute top-3 right-3 z-50 bg-black/60 hover:bg-black/80 text-white px-3 py-1.5 rounded-full text-[11px] font-semibold backdrop-blur-md border border-white/20 transition">Layar Penuh</button>
+
+                <!-- Kontrol saat layar penuh -->
+                <div id="fs-controls" class="absolute bottom-6 left-0 right-0 z-50 flex-col items-center gap-3 px-4">
+                    <button id="fs-second-strip-btn" type="button" class="hidden px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-full shadow-xl transition">+ Foto Strip ke-2</button>
+                    <div class="flex items-center gap-3">
+                        <button id="fs-start-btn" type="button" class="px-12 py-4 bg-white hover:bg-stone-100 text-stone-900 text-lg font-bold rounded-full shadow-2xl transition active:scale-95 disabled:opacity-60">Mulai Foto</button>
+                        <button id="fs-reset-btn" type="button" class="px-6 py-4 bg-black/50 hover:bg-black/70 text-white text-sm font-semibold rounded-full border border-white/30 backdrop-blur-md transition active:scale-95">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button id="start-btn" class="flex-1 py-3 bg-stone-800 hover:bg-stone-900 text-white font-medium text-sm rounded-xl shadow-md transition active:scale-[0.99] flex items-center justify-center gap-2">
+                    Mulai Foto
+                </button>
+                <button id="reset-btn" class="px-4 py-3 bg-stone-100 text-stone-600 text-xs font-semibold rounded-xl hover:bg-stone-200 transition active:scale-95">
+                    Reset
+                </button>
+            </div>
+
+            <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-200/60 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="text-left">
+                    <span class="text-xs font-bold text-amber-900 block">Atau Unggah Foto Sendiri</span>
+                    <span class="text-[10px] text-amber-700/80">Pilih foto dari galeri jika tidak ingin mengambil foto langsung</span>
+                </div>
+                <label for="upload-input" class="w-full sm:w-auto px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-xl cursor-pointer transition shadow-xs text-center shrink-0">
+                    Pilih Foto
+                </label>
+                <input type="file" id="upload-input" accept="image/*" multiple class="hidden">
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 bg-stone-50 p-3 rounded-xl border border-stone-100">
+                <div>
+                    <label class="text-[11px] font-semibold text-stone-500 uppercase tracking-wider block mb-1">Jeda Timer</label>
+                    <select id="timer-select" class="w-full text-xs bg-white border border-stone-200 rounded-lg p-2 font-medium focus:ring-1 focus:ring-stone-400 outline-none">
+                        <option value="3">3 Detik</option>
+                        <option value="5" selected>5 Detik</option>
+                        <option value="8">8 Detik</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Filter Preset</span>
+                </div>
+                <div class="grid grid-cols-5 gap-1.5 mb-3">
+                    <button data-filter="filter-normal" class="btn-filter filter-active py-2 text-[11px] font-medium rounded-lg border bg-stone-50 hover:bg-stone-100 transition">Normal</button>
+                    <button data-filter="filter-vintage" class="btn-filter py-2 text-[11px] font-medium rounded-lg border bg-amber-50/40 text-amber-900 hover:bg-amber-50 transition">Vintage</button>
+                    <button data-filter="filter-bw" class="btn-filter py-2 text-[11px] font-medium rounded-lg border bg-stone-100 text-stone-800 hover:bg-stone-200 transition">B&W</button>
+                    <button data-filter="filter-warm" class="btn-filter py-2 text-[11px] font-medium rounded-lg border bg-orange-50/40 text-orange-900 hover:bg-orange-50 transition">Warm</button>
+                    <button data-filter="filter-cool" class="btn-filter py-2 text-[11px] font-medium rounded-lg border bg-blue-50/40 text-blue-900 hover:bg-blue-50 transition">Cool</button>
+                </div>
+
+                <div class="bg-stone-50 p-3 rounded-xl border border-stone-100 space-y-2">
+                    <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Sesuaikan (Manual Adjust)</span>
+                    
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <div class="flex justify-between text-[10px] text-stone-500 mb-0.5">
+                                <span>Kecerahan</span>
+                                <span id="val-brightness">100%</span>
+                            </div>
+                            <input type="range" id="slider-brightness" min="50" max="150" value="100" class="w-full accent-stone-700 h-1 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[10px] text-stone-500 mb-0.5">
+                                <span>Kontras</span>
+                                <span id="val-contrast">100%</span>
+                            </div>
+                            <input type="range" id="slider-contrast" min="50" max="150" value="100" class="w-full accent-stone-700 h-1 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[10px] text-stone-500 mb-0.5">
+                                <span>Saturasi</span>
+                                <span id="val-saturate">100%</span>
+                            </div>
+                            <input type="range" id="slider-saturate" min="0" max="200" value="100" class="w-full accent-stone-700 h-1 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <span class="text-xs font-semibold text-stone-400 uppercase tracking-wider block mb-2">Bentuk Frame</span>
+                <div class="grid grid-cols-2 gap-2">
+                    <button data-shape="square" class="btn-shape shape-active py-2 px-3 text-[11px] font-medium rounded-xl border border-stone-300 bg-stone-50 hover:bg-stone-100 transition text-center font-bold">
+                        Persegi Standar
+                    </button>
+                    <button data-shape="heart" class="btn-shape py-2 px-3 text-[11px] font-medium rounded-xl border border-stone-200 bg-white hover:bg-stone-50 transition text-center">
+                        Bentuk Love
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <span class="text-xs font-semibold text-stone-400 uppercase tracking-wider block mb-2">Gaya & Layout Frame</span>
+                <div class="grid grid-cols-3 gap-2">
+                    <button data-template="classic" class="btn-template template-active py-2 px-3 text-[11px] font-medium rounded-xl border border-stone-300 bg-stone-50 hover:bg-stone-100 transition text-center font-bold">Classic Strip</button>
+                    <button data-template="gridportrait" class="btn-template py-2 px-3 text-[11px] font-medium rounded-xl border border-stone-200 bg-white hover:bg-stone-50 transition text-center">Grid Portrait</button>
+                    <button data-template="duov" class="btn-template py-2 px-3 text-[11px] font-medium rounded-xl border border-stone-200 bg-white hover:bg-stone-50 transition text-center">Duo Vertikal</button>
+                    <button data-template="singlep" class="btn-template py-2 px-3 text-[11px] font-medium rounded-xl border border-stone-200 bg-white hover:bg-stone-50 transition text-center">Single Portrait</button>
+                    <button data-template="strip3" class="btn-template py-2 px-3 text-[11px] font-medium rounded-xl border border-stone-200 bg-white hover:bg-stone-50 transition text-center">Strip 3 Foto</button>
+                </div>
+            </div>
+
+            <!-- FRAME CUSTOM (PNG) -->
+            <div>
+                <span class="text-xs font-semibold text-stone-400 uppercase tracking-wider block mb-2">Frame Custom (PNG)</span>
+                <div id="custom-frame-list" class="grid grid-cols-3 gap-2 mb-2"></div>
+                <label for="frame-upload" class="block w-full text-center py-2 text-[11px] font-semibold rounded-xl border border-dashed border-stone-300 bg-stone-50 hover:bg-stone-100 cursor-pointer transition">+ Upload Frame Sendiri</label>
+                <input type="file" id="frame-upload" accept="image/png" class="hidden">
+            </div>
+
+            <div>
+                <label class="text-xs font-semibold text-stone-400 uppercase tracking-wider block mb-1.5">Teks Kustom Frame</label>
+                <input type="text" id="custom-text-input" placeholder="Tuliskan sesuai keinginan mu" maxlength="25" class="w-full text-xs border border-stone-200 rounded-xl p-2.5 bg-stone-50 focus:bg-white focus:ring-1 focus:ring-stone-400 outline-none transition">
+            </div>
+
+            <div>
+                <span class="text-xs font-semibold text-stone-400 uppercase tracking-wider block mb-2">Warna Frame</span>
+                <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[240px] overflow-y-auto pr-1 custom-scrollbar">
+                    <button data-color="#ff4d6d" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-rose-500 text-white flex items-center gap-2 hover:bg-rose-600 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-rose-600 border border-white/40 shrink-0"></div>
+                        <span class="truncate font-bold">Love Red</span>
+                    </button>
+                    <button data-color="#ffb3c1" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-pink-100 text-pink-800 flex items-center gap-2 hover:bg-pink-200 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-pink-300 shrink-0"></div>
+                        <span class="truncate">Sweet Love</span>
+                    </button>
+                    <button data-color="#590d22" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-rose-950 text-rose-100 flex items-center gap-2 hover:bg-rose-900 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-rose-900 shrink-0"></div>
+                        <span class="truncate">Deep Love</span>
+                    </button>
+                    <button data-color="#ffffff" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame frame-active p-2 text-[11px] font-medium rounded-xl border border-stone-200 bg-white flex items-center gap-2 hover:border-stone-400 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-white border border-stone-300 shadow-xs shrink-0"></div>
+                        <span class="truncate">White</span>
+                    </button>
+                    <button data-color="#fecdd3" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-rose-50 text-rose-700 flex items-center gap-2 hover:bg-rose-100 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-rose-300 shrink-0"></div>
+                        <span class="truncate">Sakura</span>
+                    </button>
+                    <button data-color="#fef3c7" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-amber-50 text-amber-700 flex items-center gap-2 hover:bg-amber-100 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-amber-300 shrink-0"></div>
+                        <span class="truncate">Butter</span>
+                    </button>
+                    <button data-color="#d1fae5" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-emerald-50 text-emerald-800 flex items-center gap-2 hover:bg-emerald-100 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-emerald-300 shrink-0"></div>
+                        <span class="truncate">Matcha</span>
+                    </button>
+                    <button data-color="#1e293b" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-slate-800 text-slate-200 flex items-center gap-2 hover:bg-slate-700 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-slate-900 border border-slate-700 shrink-0"></div>
+                        <span class="truncate">Dark</span>
+                    </button>
+                    <button data-color="#ffedd5" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-orange-50 text-orange-700 flex items-center gap-2 hover:bg-orange-100 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-orange-300 shrink-0"></div>
+                        <span class="truncate">Peach</span>
+                    </button>
+                    <button data-color="#f5eae0" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-stone-100 text-amber-900 flex items-center gap-2 hover:bg-stone-200 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-[#e7d7c9] shrink-0"></div>
+                        <span class="truncate">Choco</span>
+                    </button>
+                    <button data-color="#fae8ff" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent bg-fuchsia-50 text-fuchsia-700 flex items-center gap-2 hover:bg-fuchsia-100 transition text-left">
+                        <div class="w-5 h-5 rounded-full bg-fuchsia-300 shrink-0"></div>
+                        <span class="truncate">Lilac</span>
+                    </button>
+                    <button data-color="#5a1a14" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#5a1a14;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#5a1a14"></div>
+                        <span class="truncate">Mahogany</span>
+                    </button>
+                    <button data-color="#6d1a2b" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#6d1a2b;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#6d1a2b"></div>
+                        <span class="truncate">Burgundy</span>
+                    </button>
+                    <button data-color="#722f37" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#722f37;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#722f37"></div>
+                        <span class="truncate">Wine</span>
+                    </button>
+                    <button data-color="#c67b5c" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#c67b5c;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#c67b5c"></div>
+                        <span class="truncate">Terracotta</span>
+                    </button>
+                    <button data-color="#b76e79" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#b76e79;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#b76e79"></div>
+                        <span class="truncate">Rose Gold</span>
+                    </button>
+                    <button data-color="#d8a7a7" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#d8a7a7;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#d8a7a7"></div>
+                        <span class="truncate">Dusty Rose</span>
+                    </button>
+                    <button data-color="#f6d5d5" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#f6d5d5;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#f6d5d5"></div>
+                        <span class="truncate">Blush</span>
+                    </button>
+                    <button data-color="#6f4e37" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#6f4e37;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#6f4e37"></div>
+                        <span class="truncate">Mocha</span>
+                    </button>
+                    <button data-color="#c8a98a" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#c8a98a;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#c8a98a"></div>
+                        <span class="truncate">Latte</span>
+                    </button>
+                    <button data-color="#8b7d73" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#8b7d73;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#8b7d73"></div>
+                        <span class="truncate">Taupe</span>
+                    </button>
+                    <button data-color="#f3e5c8" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#f3e5c8;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#f3e5c8"></div>
+                        <span class="truncate">Champagne</span>
+                    </button>
+                    <button data-color="#fffff0" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#fffff0;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#fffff0"></div>
+                        <span class="truncate">Ivory</span>
+                    </button>
+                    <button data-color="#e6d5b8" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#e6d5b8;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#e6d5b8"></div>
+                        <span class="truncate">Sand</span>
+                    </button>
+                    <button data-color="#c9a24b" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#c9a24b;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#c9a24b"></div>
+                        <span class="truncate">Gold</span>
+                    </button>
+                    <button data-color="#d4a017" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#d4a017;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#d4a017"></div>
+                        <span class="truncate">Mustard</span>
+                    </button>
+                    <button data-color="#b2bfa3" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#b2bfa3;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#b2bfa3"></div>
+                        <span class="truncate">Sage</span>
+                    </button>
+                    <button data-color="#6b705c" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#6b705c;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#6b705c"></div>
+                        <span class="truncate">Olive</span>
+                    </button>
+                    <button data-color="#1f3d2b" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#1f3d2b;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#1f3d2b"></div>
+                        <span class="truncate">Forest</span>
+                    </button>
+                    <button data-color="#0f5132" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#0f5132;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#0f5132"></div>
+                        <span class="truncate">Emerald</span>
+                    </button>
+                    <button data-color="#1d5b5b" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#1d5b5b;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#1d5b5b"></div>
+                        <span class="truncate">Deep Teal</span>
+                    </button>
+                    <button data-color="#8fa9bf" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#8fa9bf;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#8fa9bf"></div>
+                        <span class="truncate">Dusty Blue</span>
+                    </button>
+                    <button data-color="#14213d" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#14213d;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#14213d"></div>
+                        <span class="truncate">Navy</span>
+                    </button>
+                    <button data-color="#4b2a4a" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#4b2a4a;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#4b2a4a"></div>
+                        <span class="truncate">Plum</span>
+                    </button>
+                    <button data-color="#b08ba5" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#b08ba5;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#b08ba5"></div>
+                        <span class="truncate">Mauve</span>
+                    </button>
+                    <button data-color="#cdbfe3" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#cdbfe3;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#cdbfe3"></div>
+                        <span class="truncate">Lavender</span>
+                    </button>
+                    <button data-color="#e5e4e2" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#e5e4e2;color:#44403c">
+                        <div class="w-5 h-5 rounded-full border border-stone-300 shrink-0" style="background-color:#e5e4e2"></div>
+                        <span class="truncate">Pearl</span>
+                    </button>
+                    <button data-color="#2b2d31" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#2b2d31;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#2b2d31"></div>
+                        <span class="truncate">Charcoal</span>
+                    </button>
+                    <button data-color="#0b0b0c" data-footer="𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜" class="btn-frame p-2 text-[11px] font-medium rounded-xl border border-transparent flex items-center gap-2 hover:opacity-90 transition text-left" style="background-color:#0b0b0c;color:#ffffff">
+                        <div class="w-5 h-5 rounded-full border border-white/40 shrink-0" style="background-color:#0b0b0c"></div>
+                        <span class="truncate">Black</span>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="lg:col-span-5 flex flex-col items-center w-full sticky top-20">
+            <span class="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">Pratinjau Hasil Strip</span>
+
+            <!-- Pilihan strip 1 / strip 2 (khusus layout strip, untuk cetak 4R) -->
+            <div id="strip-tabs" class="w-full max-w-[300px] mb-3 flex flex-col gap-2">
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" data-strip="0" class="btn-strip-tab strip-tab-active py-1.5 text-[11px] font-semibold rounded-lg border border-stone-300 bg-white hover:bg-stone-50 transition">Strip 1</button>
+                    <button type="button" data-strip="1" class="btn-strip-tab py-1.5 text-[11px] font-semibold rounded-lg border border-stone-200 bg-white hover:bg-stone-50 transition">Strip 2</button>
+                </div>
+                <button type="button" id="second-strip-btn" class="hidden w-full py-2 text-[11px] font-semibold rounded-xl bg-amber-600 text-white hover:bg-amber-700 transition">+ Foto Strip ke-2 (untuk cetak 4R)</button>
+            </div>
+            
+            <div class="responsive-strip-container w-full flex justify-center">
+                <div id="booth-strip" class="w-[240px] p-4 bg-white shadow-2xl rounded-sm flex flex-col gap-3 transition-all duration-300 relative overflow-hidden border border-stone-200/60 select-none">
+                    
+                    <!-- Overlay frame custom (di atas foto) -->
+                    <img id="frame-overlay" class="frame-overlay" alt="">
+
+                    <div id="photo-slots-container" class="grid grid-cols-1 gap-3 z-0">
+                        <div class="aspect-[4/3] bg-stone-100 rounded-xs overflow-hidden border border-stone-200/30 relative group slot-wrapper">
+                            <canvas id="canvas-1" class="w-full h-full captured-frame hidden"></canvas>
+                            <button data-slot="1" class="btn-retake hidden absolute top-1 right-1 bg-black/70 hover:bg-rose-600 text-white p-1 rounded-md text-[9px] font-bold backdrop-blur-xs transition z-10">Retake</button>
+                        </div>
+                        <div class="aspect-[4/3] bg-stone-100 rounded-xs overflow-hidden border border-stone-200/30 relative group slot-wrapper">
+                            <canvas id="canvas-2" class="w-full h-full captured-frame hidden"></canvas>
+                            <button data-slot="2" class="btn-retake hidden absolute top-1 right-1 bg-black/70 hover:bg-rose-600 text-white p-1 rounded-md text-[9px] font-bold backdrop-blur-xs transition z-10">Retake</button>
+                        </div>
+                        <div class="aspect-[4/3] bg-stone-100 rounded-xs overflow-hidden border border-stone-200/30 relative group slot-wrapper">
+                            <canvas id="canvas-3" class="w-full h-full captured-frame hidden"></canvas>
+                            <button data-slot="3" class="btn-retake hidden absolute top-1 right-1 bg-black/70 hover:bg-rose-600 text-white p-1 rounded-md text-[9px] font-bold backdrop-blur-xs transition z-10">Retake</button>
+                        </div>
+                        <div class="aspect-[4/3] bg-stone-100 rounded-xs overflow-hidden border border-stone-200/30 relative group slot-wrapper">
+                            <canvas id="canvas-4" class="w-full h-full captured-frame hidden"></canvas>
+                            <button data-slot="4" class="btn-retake hidden absolute top-1 right-1 bg-black/70 hover:bg-rose-600 text-white p-1 rounded-md text-[9px] font-bold backdrop-blur-xs transition z-10">Retake</button>
+                        </div>
+                    </div>
+
+                    <div class="footer-box text-center py-1 mt-0.5 z-20">
+                        <p class="text-[10px] uppercase tracking-widest text-stone-500 font-semibold transition-colors" id="strip-footer-text">𝑀𝒾𝓇𝓃𝒶 𝒮𝓉𝓊𝒹𝒾𝑜</p>
+                        <p class="text-[7px] text-stone-400 tracking-wider mt-0.5" id="strip-date-text"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full max-w-[240px] flex flex-col gap-2 mt-4">
+                <button id="download-btn" disabled class="w-full py-3 bg-stone-800 text-white text-xs font-semibold tracking-wide rounded-xl shadow-md hover:bg-stone-900 disabled:bg-stone-200 disabled:text-stone-400 disabled:shadow-none disabled:cursor-not-allowed transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Unduh Foto
+                </button>
+                <button id="download-gif-btn" disabled class="w-full py-2.5 bg-amber-600 text-white text-xs font-semibold tracking-wide rounded-xl shadow-md hover:bg-amber-700 disabled:bg-stone-200 disabled:text-stone-400 disabled:shadow-none disabled:cursor-not-allowed transition flex items-center justify-center gap-2">
+                    Unduh GIF 
+                </button>
+                <button id="print-btn" disabled class="w-full py-3 bg-emerald-600 text-white text-xs font-semibold tracking-wide rounded-xl shadow-md hover:bg-emerald-700 disabled:bg-stone-200 disabled:text-stone-400 disabled:shadow-none disabled:cursor-not-allowed transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Cetak Langsung (4R)
+                </button>
+                <button id="download-4r-btn" disabled class="w-full py-2.5 bg-white text-stone-700 text-xs font-semibold tracking-wide rounded-xl border border-stone-300 hover:bg-stone-50 disabled:bg-stone-200 disabled:text-stone-400 disabled:border-transparent disabled:cursor-not-allowed transition">
+                    Unduh File Siap Cetak 4R
+                </button>
+                <p class="text-[9px] text-stone-400 text-center leading-snug"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-3 text-center text-[10px] text-stone-400 bg-white/50 border-t border-stone-200/50 mt-6">
+        &copy; 2026 Mirna Studio. All Rights Reserved.
+    </footer>
+
+    <!-- Area cetak 4R (hanya tampil saat print) -->
+    <div id="print-area"><img id="print-img" alt=""></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
